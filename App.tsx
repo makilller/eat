@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2, Utensils } from 'lucide-react';
@@ -31,7 +32,7 @@ const App: React.FC = () => {
       setResult(data);
     } catch (err) {
       console.error(err);
-      setError('AI 似乎饿晕了，请稍后再试。');
+      setError('系统似乎饿晕了，请稍后再试。');
     } finally {
       setLoading(false);
     }
@@ -48,7 +49,7 @@ const App: React.FC = () => {
 
       <header className="absolute top-6 left-0 right-0 flex justify-center items-center gap-2 opacity-80">
         <Utensils size={20} className="text-red-500" />
-        <span className="text-sm font-bold tracking-widest text-slate-400 uppercase">Beijing Food Guide AI</span>
+        <span className="text-sm font-bold tracking-widest text-slate-400 uppercase">Beijing Food Guide</span>
       </header>
 
       <main className="w-full max-w-2xl flex flex-col items-center z-10">
@@ -71,7 +72,7 @@ const App: React.FC = () => {
                   今天吃什么?
                 </motion.h1>
                 <p className="text-slate-400 text-lg">
-                   人在北京，不知道吃啥？点几个标签，AI 帮你决定。
+                   人在北京，不知道吃啥？点几个标签，系统帮你决定。
                 </p>
               </div>
 
@@ -117,10 +118,10 @@ const App: React.FC = () => {
                 <Loader2 size={64} className="text-red-500 animate-spin relative z-10" />
               </div>
               <p className="text-xl text-slate-300 font-light animate-pulse">
-                正在观察北京天象...
+                正在检索本地美食库...
               </p>
               <p className="text-sm text-slate-500">
-                AI 正在计算此刻最适合你的味道
+                算法正在计算匹配度
               </p>
             </motion.div>
           )}
@@ -134,7 +135,7 @@ const App: React.FC = () => {
       </main>
 
       <footer className="absolute bottom-4 text-xs text-slate-600 text-center">
-        Powered by Gemini 2.5 • Beijing Food Guide
+        Beijing Food Guide • Local Edition
       </footer>
     </div>
   );

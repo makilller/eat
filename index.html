@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
   <head>
@@ -58,13 +59,12 @@
         100% { transform: translateX(100%); }
       }
     </style>
-  <script type="importmap">
+<script type="importmap">
 {
   "imports": {
     "react": "https://aistudiocdn.com/react@^19.2.0",
     "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
     "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
     "framer-motion": "https://aistudiocdn.com/framer-motion@^12.23.24",
     "recharts": "https://aistudiocdn.com/recharts@^3.5.0",
     "lucide-react": "https://aistudiocdn.com/lucide-react@^0.554.0"
@@ -74,15 +74,6 @@
 </head>
   <body>
     <div id="root"></div>
-    <script>
-      // Polyfill for process.env to work in browser environment on Vercel
-      // This allows the app to access the API Key without server-side injection
-      window.process = {
-        env: {
-          API_KEY: "AIzaSyBA1LVlEKTa90BY7O1riA0UsIRWOaN783w"
-        }
-      };
-    </script>
     <script type="module" src="/index.tsx"></script>
   </body>
 </html>
