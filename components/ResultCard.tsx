@@ -1,8 +1,9 @@
+
 import React from 'react';
-import { FoodRecommendation } from '../types';
+import { FoodRecommendation, FlavorProfile } from '../types';
 import { motion } from 'framer-motion';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, ResponsiveContainer } from 'recharts';
-import { MapPin, Thermometer, Info, DollarSign } from 'lucide-react';
+import { MapPin, Flame, Info, DollarSign } from 'lucide-react';
 
 interface ResultCardProps {
   data: FoodRecommendation;
@@ -17,6 +18,18 @@ const ResultCard: React.FC<ResultCardProps> = ({ data, onReset }) => {
     { subject: '酸度', A: data.flavorProfile.sour, fullMark: 100 },
     { subject: '油腻', A: data.flavorProfile.greasy, fullMark: 100 },
   ];
+
+  const getDominantFlavor = (profile: FlavorProfile) => {
+    const max = Object.entries(profile).reduce((a, b) => a[1] > b[1] ? a : b);
+    const map: Record<string, string> = {
+      spicy: '热辣过瘾',
+      salty: '咸鲜适口',
+      sweet: '甜蜜滋味',
+      sour: '酸爽开胃',
+      greasy: '肥美油润'
+    };
+    return map[max[0]] || '口味丰富';
+  };
 
   return (
     <motion.div 
@@ -57,8 +70,8 @@ const ResultCard: React.FC<ResultCardProps> = ({ data, onReset }) => {
             <span className="text-slate-300">{data.estimatedPrice}</span>
           </div>
           <div className="bg-slate-800/50 p-3 rounded-xl flex items-center gap-2 border border-slate-700/50">
-            <Thermometer size={16} className="text-orange-400" />
-            <span className="text-slate-300">推荐理由: {data.reasoning.substring(0, 10)}...</span>
+            <Flame size={16} className="text-orange-400" />
+            <span className="text-slate-300">{getDominantFlavor(data.flavorProfile)}</span>
           </div>
           <div className="bg-slate-800/50 p-3 rounded-xl flex items-center gap-2 border border-slate-700/50">
             <Info size={16} className="text-sky-400" />
@@ -68,7 +81,7 @@ const ResultCard: React.FC<ResultCardProps> = ({ data, onReset }) => {
         
         {/* Full reasoning expanded */}
          <div className="bg-slate-800/30 p-3 rounded-xl text-xs text-slate-400 border border-slate-700/30">
-            <span className="font-bold text-slate-300 block mb-1">AI 推荐语:</span>
+            <span className="font-bold text-slate-300 block mb-1">系统点评:</span>
             {data.reasoning}
         </div>
 

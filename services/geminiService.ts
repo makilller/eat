@@ -1,5 +1,5 @@
 
-import { FoodRecommendation } from "../types";
+import { FoodRecommendation, WeatherData } from "../types";
 
 // Helper interface for local data
 interface LocalDish extends FoodRecommendation {
@@ -159,52 +159,79 @@ const LOCAL_DATABASE: LocalDish[] = [
   }
 ];
 
-export const getFoodRecommendation = async (tags: string[]): Promise<FoodRecommendation> => {
+export const getFoodRecommendation = async (tags: string[], weather: WeatherData | null): Promise<FoodRecommendation> => {
   // Simulate network delay for better UX (so the loading animation plays)
-  await new Promise(resolve => setTimeout(resolve, 1200));
+  await new Promise(resolve => setTimeout(resolve, 800));
 
-  let candidates = LOCAL_DATABASE;
+  let candidates = [...LOCAL_DATABASE];
   
-  if (tags.length > 0) {
-    // Scoring system: +1 point for each matching tag
-    const scored = LOCAL_DATABASE.map(dish => {
-      let score = 0;
-      dish.tags.forEach(dishTag => {
-        if (tags.includes(dishTag)) score += 1;
-      });
-      return { dish, score };
-    });
-    
-    // Sort by score descending
-    scored.sort((a, b) => b.score - a.score);
-    
-    // Filter to keep only the best matches (top score)
-    const maxScore = scored[0].score;
-    if (maxScore > 0) {
-      // If we have matches, keep all dishes with the highest score or score - 1 (for variety)
-      candidates = scored
-        .filter(s => s.score >= maxScore - 0.5) // Loose matching
-        .map(s => s.dish);
+  // Weather-based bias
+  let weatherReason = "";
+  if (weather) {
+    if (weather.temperature <= 10) {
+      // Cold weather logic
+      weatherReason = `北京现在${weather.temperature.toFixed(1)}℃，天儿冷，吃点热乎的！`;
+      // Boost hot and spicy items
+      // We handle this by modifying how we filter/sort later, or just simple logical selection bias
+    } else if (weather.temperature >= 28) {
+      // Hot weather logic
+      weatherReason = `北京现在${weather.temperature.toFixed(1)}℃，太热了，来点清爽的吧。`;
+    } else {
+      weatherReason = `北京现在${weather.temperature.toFixed(1)}℃，气温刚刚好。`;
     }
   }
 
-  // Randomly select one from the candidates
-  const randomDish = candidates[Math.floor(Math.random() * candidates.length)];
+  // Scoring System
+  const scored = candidates.map(dish => {
+    let score = 0;
+    
+    // Tag matching
+    dish.tags.forEach(dishTag => {
+      if (tags.includes(dishTag)) score += 2; // Selected tags are worth more
+    });
+
+    // Weather matching (Implicit logic)
+    if (weather) {
+      if (weather.temperature <= 5) {
+        if (dish.tags.includes('hot')) score += 1.5;
+        if (dish.tags.includes('heavy')) score += 0.5;
+        if (dish.tags.includes('cold')) score -= 1;
+      } else if (weather.temperature >= 28) {
+        if (dish.tags.includes('cold')) score += 2;
+        if (dish.tags.includes('light')) score += 1;
+        if (dish.tags.includes('heavy')) score -= 0.5;
+      }
+    }
+
+    return { dish, score };
+  });
+
+  // Sort by score descending + random shuffle for top items to avoid repetition
+  scored.sort((a, b) => b.score - a.score);
+
+  // Filter: Keep dishes that are within range of the highest score
+  const maxScore = scored[0].score;
+  const bestMatches = scored.filter(s => s.score >= maxScore - 1.5);
   
-  // Dynamic reasoning based on time
+  // Random select from best matches
+  const randomSelection = bestMatches[Math.floor(Math.random() * bestMatches.length)];
+  const selectedDish = randomSelection.dish;
+
+  // Dynamic Time Reasoning
   const now = new Date();
   const hours = now.getHours();
   let timeReason = "";
   
-  if (hours >= 5 && hours < 10) timeReason = "作为早餐开启活力满满的一天。";
-  else if (hours >= 21 || hours < 5) timeReason = "作为深夜慰藉，这口味道刚刚好。";
-  else if (hours >= 11 && hours <= 13) timeReason = "午餐吃得饱，下午工作精神好。";
-  else if (hours >= 17 && hours <= 20) timeReason = "晚餐时刻，好好犒劳一下自己。";
-  else timeReason = "在这个点吃这个，绝对是懂生活的选择。";
+  if (hours >= 5 && hours < 10) timeReason = "早餐要吃好，";
+  else if (hours >= 21 || hours < 5) timeReason = "深夜放毒时间，";
+  else if (hours >= 11 && hours <= 13) timeReason = "午餐补给站，";
+  else if (hours >= 17 && hours <= 20) timeReason = "晚餐时刻，";
+  
+  // Combine reasons
+  const finalReasoning = `${weatherReason} ${timeReason}${selectedDish.reasoning}`;
 
-  // Return a new object to avoid mutating the database
   return {
-    ...randomDish,
-    reasoning: `${randomDish.reasoning} ${timeReason}`
+    ...selectedDish,
+    reasoning: finalReasoning
   };
 };

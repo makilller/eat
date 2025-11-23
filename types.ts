@@ -21,3 +21,9 @@ export interface Tag {
   label: string;
   category: 'taste' | 'type' | 'price' | 'temp';
 }
+
+export interface WeatherData {
+  temperature: number;
+  weatherCode: number;
+  isDay: boolean;
+}

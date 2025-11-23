@@ -1,18 +1,28 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2, Utensils } from 'lucide-react';
+import { Loader2, Utensils, CloudSun, CloudRain, Sun, Snowflake, CloudFog } from 'lucide-react';
 import TagSelector from './components/TagSelector';
 import ResultCard from './components/ResultCard';
 import Background from './components/Background';
 import { getFoodRecommendation } from './services/geminiService';
-import { FoodRecommendation } from './types';
+import { getBeijingWeather, getWeatherDescription } from './services/weatherService';
+import { FoodRecommendation, WeatherData } from './types';
 
 const App: React.FC = () => {
   const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<FoodRecommendation | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [weather, setWeather] = useState<WeatherData | null>(null);
+
+  useEffect(() => {
+    const fetchWeather = async () => {
+      const data = await getBeijingWeather();
+      setWeather(data);
+    };
+    fetchWeather();
+  }, []);
 
   const toggleTag = (id: string) => {
     const newTags = new Set(selectedTags);
@@ -28,7 +38,7 @@ const App: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await getFoodRecommendation(Array.from(selectedTags));
+      const data = await getFoodRecommendation(Array.from(selectedTags), weather);
       setResult(data);
     } catch (err) {
       console.error(err);
@@ -43,16 +53,41 @@ const App: React.FC = () => {
     setError(null);
   };
 
+  const getWeatherIcon = (code: number) => {
+    if (code === 0) return <Sun className="text-amber-400" size={18} />;
+    if (code >= 1 && code <= 3) return <CloudSun className="text-slate-300" size={18} />;
+    if (code >= 71) return <Snowflake className="text-sky-300" size={18} />;
+    if (code >= 51) return <CloudRain className="text-blue-400" size={18} />;
+    if (code >= 45) return <CloudFog className="text-slate-400" size={18} />;
+    return <Sun className="text-amber-400" size={18} />;
+  };
+
   return (
     <div className="min-h-screen text-slate-100 flex flex-col items-center justify-center relative p-4 font-sans">
       <Background />
 
-      <header className="absolute top-6 left-0 right-0 flex justify-center items-center gap-2 opacity-80">
-        <Utensils size={20} className="text-red-500" />
-        <span className="text-sm font-bold tracking-widest text-slate-400 uppercase">Beijing Food Guide</span>
+      <header className="absolute top-6 left-0 right-0 flex justify-between items-center px-6 md:px-12 opacity-90 z-20">
+        <div className="flex items-center gap-2">
+          <Utensils size={20} className="text-red-500" />
+          <span className="text-sm font-bold tracking-widest text-slate-400 uppercase hidden md:inline">Beijing Food Guide</span>
+        </div>
+
+        {weather && (
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-center gap-3 bg-slate-900/50 backdrop-blur-md px-4 py-2 rounded-full border border-slate-700/50 shadow-lg"
+          >
+            {getWeatherIcon(weather.weatherCode)}
+            <div className="flex flex-col leading-none">
+              <span className="text-sm font-bold text-slate-200">{weather.temperature}°C</span>
+              <span className="text-[10px] text-slate-400">北京 • {getWeatherDescription(weather.weatherCode)}</span>
+            </div>
+          </motion.div>
+        )}
       </header>
 
-      <main className="w-full max-w-2xl flex flex-col items-center z-10">
+      <main className="w-full max-w-2xl flex flex-col items-center z-10 pt-12 md:pt-0">
         <AnimatePresence mode="wait">
           {!result && !loading && (
             <motion.div
@@ -71,8 +106,10 @@ const App: React.FC = () => {
                 >
                   今天吃什么?
                 </motion.h1>
-                <p className="text-slate-400 text-lg">
-                   人在北京，不知道吃啥？点几个标签，系统帮你决定。
+                <p className="text-slate-400 text-lg flex items-center gap-2 justify-center">
+                   {weather ? (
+                     <span>根据 <span className="text-sky-400 font-semibold">北京天气</span> 智能推荐</span>
+                   ) : "人在北京，不知道吃啥？"}
                 </p>
               </div>
 
@@ -117,12 +154,16 @@ const App: React.FC = () => {
                 <div className="absolute inset-0 bg-red-500 blur-xl opacity-20 animate-pulse"></div>
                 <Loader2 size={64} className="text-red-500 animate-spin relative z-10" />
               </div>
-              <p className="text-xl text-slate-300 font-light animate-pulse">
-                正在检索本地美食库...
-              </p>
-              <p className="text-sm text-slate-500">
-                算法正在计算匹配度
-              </p>
+              <div className="text-center space-y-2">
+                <p className="text-xl text-slate-300 font-light animate-pulse">
+                  正在同步北京气象数据...
+                </p>
+                {weather && (
+                  <p className="text-sm text-sky-400">
+                    当前室外 {weather.temperature}℃，正在调整推荐策略
+                  </p>
+                )}
+              </div>
             </motion.div>
           )}
 
@@ -134,8 +175,8 @@ const App: React.FC = () => {
         </AnimatePresence>
       </main>
 
-      <footer className="absolute bottom-4 text-xs text-slate-600 text-center">
-        Beijing Food Guide • Local Edition
+      <footer className="absolute bottom-4 text-xs text-slate-600 text-center w-full">
+        Beijing Food Guide • Weather Integrated
       </footer>
     </div>
   );
