@@ -52,6 +52,11 @@
       .animate-slow-spin {
         animation: slow-spin 20s linear infinite;
       }
+      
+      @keyframes shimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+      }
     </style>
   <script type="importmap">
 {
@@ -69,6 +74,15 @@
 </head>
   <body>
     <div id="root"></div>
+    <script>
+      // Polyfill for process.env to work in browser environment on Vercel
+      // This allows the app to access the API Key without server-side injection
+      window.process = {
+        env: {
+          API_KEY: "AIzaSyBA1LVlEKTa90BY7O1riA0UsIRWOaN783w"
+        }
+      };
+    </script>
     <script type="module" src="/index.tsx"></script>
   </body>
 </html>
