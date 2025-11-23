@@ -1,3 +1,4 @@
+
 export interface FlavorProfile {
   spicy: number;
   salty: number;
@@ -7,6 +8,7 @@ export interface FlavorProfile {
 }
 
 export interface FoodRecommendation {
+  id: string; // Added ID for selection tracking
   dishName: string;
   shortDescription: string;
   reasoning: string;
