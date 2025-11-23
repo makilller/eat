@@ -17,17 +17,17 @@ const LOCAL_DATABASE: LocalDish[] = [
     estimatedPrice: "150-200 RMB",
     calories: "500 kcal",
     flavorProfile: { spicy: 0, salty: 40, sweet: 60, sour: 0, greasy: 80 },
-    tags: ['traditional', 'luxury', 'heavy', 'rice'] 
+    tags: ['traditional', 'luxury', 'heavy'] 
   },
   {
     dishName: "便宜坊·焖炉烤鸭",
     shortDescription: "崇文门总店，焖炉不见火，鸭肉嫩。",
-    reasoning: "600年老字号，焖炉烤鸭更锁汁，吃起来不燥，适合不想吃太油腻的朋友。",
+    reasoning: "600年老字号，焖炉烤鸭更锁汁，吃起来不燥，但也绝对算硬菜。",
     restaurantType: "老字号",
     estimatedPrice: "120-180 RMB",
     calories: "450 kcal",
-    flavorProfile: { spicy: 0, salty: 40, sweet: 50, sour: 0, greasy: 60 },
-    tags: ['traditional', 'luxury', 'light']
+    flavorProfile: { spicy: 0, salty: 40, sweet: 50, sour: 0, greasy: 70 },
+    tags: ['traditional', 'luxury', 'heavy']
   },
   {
     dishName: "利群烤鸭",
@@ -150,12 +150,12 @@ const LOCAL_DATABASE: LocalDish[] = [
   {
     dishName: "新川面馆",
     shortDescription: "麻酱凉面配肘子，夏日标配。",
-    reasoning: "凉面带点芥末味，解暑神器，一定要切盘酱肘子或者酱肉。",
+    reasoning: "虽然是凉面，但麻酱醇厚，配上酱肘子，绝对是重口味的满足。",
     restaurantType: "老字号",
     estimatedPrice: "25-40 RMB",
     calories: "450 kcal",
-    flavorProfile: { spicy: 10, salty: 60, sweet: 30, sour: 40, greasy: 30 },
-    tags: ['noodle', 'cold', 'light', 'cheap', 'fast']
+    flavorProfile: { spicy: 10, salty: 60, sweet: 30, sour: 40, greasy: 60 },
+    tags: ['noodle', 'cold', 'heavy', 'cheap', 'fast']
   },
   {
     dishName: "门框胡同·卤煮火烧",
@@ -177,7 +177,7 @@ const LOCAL_DATABASE: LocalDish[] = [
     estimatedPrice: "150-200 RMB",
     calories: "700 kcal",
     flavorProfile: { spicy: 0, salty: 60, sweet: 50, sour: 40, greasy: 60 },
-    tags: ['luxury', 'heavy', 'rice']
+    tags: ['luxury', 'heavy']
   },
   {
     dishName: "Annie's 安妮意大利餐厅",
@@ -186,8 +186,8 @@ const LOCAL_DATABASE: LocalDish[] = [
     restaurantType: "品质西餐",
     estimatedPrice: "100-150 RMB",
     calories: "600 kcal",
-    flavorProfile: { spicy: 0, salty: 50, sweet: 20, sour: 20, greasy: 40 },
-    tags: ['light', 'luxury', 'traditional']
+    flavorProfile: { spicy: 0, salty: 50, sweet: 20, sour: 20, greasy: 60 },
+    tags: ['luxury', 'heavy']
   },
 
   // --- 快餐/连锁 ---
@@ -219,7 +219,7 @@ const LOCAL_DATABASE: LocalDish[] = [
     estimatedPrice: "40-70 RMB",
     calories: "800 kcal",
     flavorProfile: { spicy: 0, salty: 60, sweet: 30, sour: 10, greasy: 60 },
-    tags: ['fast', 'heavy', 'snack']
+    tags: ['fast', 'heavy']
   },
   {
     dishName: "半天妖烤鱼",
@@ -259,7 +259,7 @@ const LOCAL_DATABASE: LocalDish[] = [
     estimatedPrice: "20-30 RMB",
     calories: "400 kcal",
     flavorProfile: { spicy: 70, salty: 60, sweet: 10, sour: 30, greasy: 30 },
-    tags: ['fast', 'cold', 'spicy', 'cheap', 'snack']
+    tags: ['fast', 'cold', 'spicy', 'cheap', 'snack', 'noodle']
   },
   {
     dishName: "夸父炸串",
@@ -278,8 +278,8 @@ const LOCAL_DATABASE: LocalDish[] = [
     restaurantType: "面包甜点",
     estimatedPrice: "20-40 RMB",
     calories: "350 kcal",
-    flavorProfile: { spicy: 0, salty: 10, sweet: 90, sour: 0, greasy: 40 },
-    tags: ['snack', 'light', 'cheap']
+    flavorProfile: { spicy: 0, salty: 10, sweet: 90, sour: 0, greasy: 50 },
+    tags: ['snack', 'cheap']
   }
 ];
 
